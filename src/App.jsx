@@ -1,13 +1,43 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { AlumnoAdd } from './components/AlumnoAdd';
 import { AlumnoList } from './components/AlumnoList';
-
-
+import { usePushNotifications } from './hooks/usePushNotification';
+import { useEffect } from 'react';
 
 
 export default function App() {
+  const { subscription, error, subscribeUser } = usePushNotifications();
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('✅ Service Worker registrado con éxito. Scope:', registration.scope);
+          })
+          .catch((error) => {
+            console.error('❌ Falló el registro del Service Worker:', error);
+          });
+      });
+    }
+  }, []);
   return (
     <BrowserRouter>
+      <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+        {subscription ? (
+          <div style={{ color: 'green', fontWeight: 'bold' }}>
+            ✅ ¡Estás suscrito para recibir notificaciones push!
+          </div>
+        ) : (
+          <button
+            onClick={subscribeUser}
+            style={{ padding: '10px 20px', fontSize: '1rem', backgroundColor: '#0d6efd', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          >
+            Activar Notificaciones Push
+          </button>
+        )}
+
+        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      </div>
       <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
 
         {/* Barra de navegación superior con Links */}

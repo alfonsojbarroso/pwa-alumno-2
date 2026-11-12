@@ -7,44 +7,24 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Gestor de Clientes PWA',
-        short_name: 'ClientesApp',
-        description: 'Aplicación web progresiva con React',
-        theme_color: '#2563eb',
+        name: 'Mi PWA de Notificaciones',
+        short_name: 'PWA Push',
+        description: 'Aplicación Web Progresiva con React y Push Notifications',
+        theme_color: '#0d6efd',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [
           {
-            src: '/icons/icon-192x192.png',
+            src: '/pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: '/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png'
-          }
-        ]
-      },
-      // --- CONFIGURACIÓN DE WORKBOX PARA LA API ---
-      workbox: {
-        runtimeCaching: [
-          {
-            // Aplica esta regla a cualquier petición que vaya a tu endpoint de clientes
-            urlPattern: /^http:\/\/localhost:9090\/api\/v1\/customer.*/i,
-            handler: 'NetworkFirst', // Intenta red primero, si no hay internet usa la caché
-            options: {
-              cacheName: 'api-clientes-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // Guarda en caché por 7 días
-              },
-              cacheableResponse: {
-                statuses: [0, 200] // Guarda respuestas exitosas
-              }
-            }
           }
         ]
       }

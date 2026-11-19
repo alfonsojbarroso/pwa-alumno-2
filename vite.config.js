@@ -9,7 +9,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Mi PWA de Notificaciones',
+        name: 'Alumno App',
         short_name: 'PWA Push',
         description: 'Aplicación Web Progresiva con React y Push Notifications',
         theme_color: '#0d6efd',

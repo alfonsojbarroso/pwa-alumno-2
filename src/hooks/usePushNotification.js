@@ -32,6 +32,8 @@ export function usePushNotifications() {
 
     const subscribeUser = async () => {
         try {
+            setError(null);
+
             if (!('Notification' in window) || !('serviceWorker' in navigator)) {
                 throw new Error('Las notificaciones Push no son soportadas por este navegador.');
             }
@@ -43,7 +45,6 @@ export function usePushNotifications() {
 
             const registration = await navigator.serviceWorker.ready;
 
-            // Llave pública VAPID provista por tu servidor backend
             const publicVapidKey = 'BGKWM3fraRMc-hEOoOgYe8Gf-qN5Ze22yM_K5_oQrqCr5H4VUms-DOgDqN6DUfNeUrlbh7K7gmnzjl1rLJi2Ikw';
             const sub = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
@@ -51,11 +52,28 @@ export function usePushNotifications() {
             });
 
             setSubscription(sub);
-            console.log('Suscripción Push exitosa:', sub);
+            const payload = sub.toJSON();
 
-            // Aquí enviarías el objeto `sub` a tu servidor backend mediante una petición POST
-            // await fetch('https://tu-api.com/subscribe', { method: 'POST', body: JSON.stringify(sub), ... });
 
+            console.log(payload);
+
+
+            console.log('Suscripción Push exitosa:', payload);
+
+            const response = await fetch('http://localhost:8080/api/push/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error del servidor (${response.status}): ${errorText}`);
+            }
+
+            console.log('Suscripción enviada y guardada en el backend con éxito.');
         } catch (err) {
             console.error('Error al suscribir a push notifications:', err);
             setError(err.message);

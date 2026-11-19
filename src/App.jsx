@@ -8,17 +8,26 @@ import { useEffect } from 'react';
 export default function App() {
   const { subscription, error, subscribeUser } = usePushNotifications();
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then((registration) => {
-            console.log('✅ Service Worker registrado con éxito. Scope:', registration.scope);
-          })
-          .catch((error) => {
-            console.error('❌ Falló el registro del Service Worker:', error);
-          });
+    if (!('serviceWorker' in navigator)) return;
+
+    let isMounted = true;
+
+    navigator.serviceWorker
+      .register('/sw.js', { scope: '/' })
+      .then((registration) => {
+        if (isMounted) {
+          console.log('✅ Service Worker registrado con éxito. Scope:', registration.scope);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          console.error('❌ Falló el registro del Service Worker:', err);
+        }
       });
-    }
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
   return (
     <BrowserRouter>

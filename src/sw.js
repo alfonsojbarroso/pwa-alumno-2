@@ -1,7 +1,7 @@
 // public/sw.js - Service Worker Estático Puro
 
 self.addEventListener('install', (event) => {
-    console.log('[SW] Instalado correctamente');
+    console.log('[SW] Instalado correctamente V1.0.0');
     self.skipWaiting();
 });
 
